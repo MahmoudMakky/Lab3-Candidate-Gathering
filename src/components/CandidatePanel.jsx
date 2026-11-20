@@ -3,14 +3,12 @@ import { gatherCandidates } from "../lib/gatherCandidates";
 import { matchesBrowser } from "../lib/parseCandidate";
 import "./CandidatePanel.css";
 
-// The three configurations from the lab
 export const CONFIGS = {
   none: [],
   stun: [{ urls: "stun:stun.l.google.com:19302" }],
   wrong: [{ urls: "stun:stun.invalid.example:3478" }],
 };
 
-// Row colours: host and srflx must look different
 const COLORS = {
   host: "#d5f0ec",
   srflx: "#fdecc8",
@@ -35,8 +33,6 @@ function CandidateRows({ list }) {
   ));
 }
 
-// The table is its own component so the hook version (O5) can use it too.
-// UDP rows come first, TCP rows are a second group (O6).
 export function CandidateTable({ candidates }) {
   const udpRows = sortByPriority(candidates.filter((c) => c.protocol !== "tcp"));
   const tcpRows = sortByPriority(candidates.filter((c) => c.protocol === "tcp"));
@@ -82,16 +78,15 @@ export default function CandidatePanel() {
   const [candidates, setCandidates] = useState([]);
   const [elapsed, setElapsed] = useState(null);
   const [gatheringState, setGatheringState] = useState("new");
-  const [runId, setRunId] = useState(0); // changes when I press "Gather again"
+  const [runId, setRunId] = useState(0);
   const [micMessage, setMicMessage] = useState("");
 
   const iceServers = CONFIGS[configName];
 
   useEffect(() => {
     let active = true;
-    const start = performance.now(); // timer starts when the effect runs
+    const start = performance.now(); 
 
-    // Empty the table so rows from the old run do not stay
     setCandidates([]);
     setElapsed(null);
     setGatheringState("new");
@@ -99,13 +94,11 @@ export default function CandidatePanel() {
     const stop = gatherCandidates({
       iceServers,
 
-      // Each candidate is added to state as soon as it arrives (new array, no push)
       onCandidate: (candidate) => {
         if (!active) return;
         setCandidates((old) => [...old, candidate]);
       },
 
-      // The null candidate stops the timer
       onDone: () => {
         if (!active) return;
         setElapsed(Math.round(performance.now() - start));
@@ -117,14 +110,12 @@ export default function CandidatePanel() {
       },
     });
 
-    // Cleanup: closes the old connection before a new one is opened
     return () => {
       active = false;
       stop();
     };
   }, [iceServers, runId]);
 
-  // O2: ask for the microphone once, then gather again
   async function askMicrophone() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -136,7 +127,6 @@ export default function CandidatePanel() {
     setRunId((old) => old + 1);
   }
 
-  // O8: how many candidates did my regular expression read correctly?
   const parsedOk = candidates.filter((c) => matchesBrowser(c)).length;
 
   return (

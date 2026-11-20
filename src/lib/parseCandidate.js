@@ -1,6 +1,3 @@
-// O8: read the raw candidate string with a regular expression.
-// Example string:
-// candidate:842163049 1 udp 1677729535 203.0.113.5 54321 typ srflx raddr 192.168.1.5 rport 54321 generation 0
 const CANDIDATE_REGEX =
   /^candidate:(\S+) (\d+) (\S+) (\d+) (\S+) (\d+) typ (\S+)(?: raddr (\S+) rport (\d+))?(?: tcptype (\S+))?/;
 
@@ -22,7 +19,6 @@ export function parseCandidate(text) {
   };
 }
 
-// Compare my parsed fields with the properties the browser gave us.
 export function matchesBrowser(candidate) {
   const mine = parseCandidate(candidate.candidate);
   if (mine === null) return false;

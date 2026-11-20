@@ -1,4 +1,3 @@
-// O5: the same panel, but the gathering logic comes from the hook.
 import { useState } from "react";
 import { useIceCandidates } from "../hooks/useIceCandidates";
 import { CandidateTable, CONFIGS } from "./CandidatePanel";

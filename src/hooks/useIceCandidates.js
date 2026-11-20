@@ -1,4 +1,3 @@
-// O5: the same logic as CandidatePanel, moved into a hook.
 import { useEffect, useState } from "react";
 import { gatherCandidates } from "../lib/gatherCandidates";
 
